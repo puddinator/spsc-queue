@@ -1,0 +1,3 @@
+/Users/puddinator/CLionProjects/practice/spsc queue/cmake-build-debug/CMakeFiles/spsc_queue.dir
+/Users/puddinator/CLionProjects/practice/spsc queue/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/puddinator/CLionProjects/practice/spsc queue/cmake-build-debug/CMakeFiles/rebuild_cache.dir
