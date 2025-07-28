@@ -1,17 +1,20 @@
 #include <mutex>
 #include <optional>
 
+// perfect-forwarding for push()
 template <typename T, size_t N>
-class SpscQueue {
+class SpscQueue2 {
 public:
-	SpscQueue() {}
+	SpscQueue2() {}
 
-	bool push(const T& e) {
+	template <typename U>
+	requires (std::is_assignable_v<T&, U&&>)
+	bool push(U&& e) {
 		std::lock_guard<std::mutex> lock(mtx);
 		if ((tail + 1) % N == head) { // queue is full
 			return false;
 		}
-		array[tail] = e;
+		array[tail] = std::forward<U>(e);
 		tail = (tail + 1) % N;
 		return true;
 	}
@@ -27,7 +30,6 @@ public:
 	}
 
 private:
-//	T array[N];
 	std::array<T, N> array;
 	std::mutex mtx;
 	size_t head = 0; // consumer reads from
