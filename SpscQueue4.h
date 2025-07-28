@@ -2,20 +2,20 @@
 #include <optional>
 
 template <typename T, size_t N>
-class SpscQueue {
+class SpscQueue4 {
 public:
-	bool push(const T& e) {
-		std::lock_guard<std::mutex> lock(mtx_);
+	template <typename U>
+	requires (std::is_assignable_v<T&, U&&>)
+	bool push(U&& e) {
 		if ((tail_ + 1) % N == head_) { // queue is full
 			return false;
 		}
-		buffer_[tail_] = e;
+		buffer_[tail_] = std::forward<U>(e);
 		tail_ = (tail_ + 1) % N;
 		return true;
 	}
 
 	std::optional<T> pop() {
-		std::lock_guard<std::mutex> lock(mtx_);
 		if (head_ == tail_) { // queue is empty
 			return std::nullopt;
 		}
@@ -25,9 +25,7 @@ public:
 	}
 
 private:
-//	T buffer_[N];
 	std::array<T, N> buffer_;
-	std::mutex mtx_;
-	size_t head_ = 0; // consumer reads from
-	size_t tail_ = 0; // producer writes to
+	std::atomic<size_t> head_ = 0; // consumer reads from
+	std::atomic<size_t> tail_ = 0; // producer writes to
 };
