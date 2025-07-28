@@ -1,6 +1,7 @@
 #include <mutex>
 #include <optional>
 
+// lock free
 template <typename T, size_t N>
 class SpscQueue3 {
 public:
